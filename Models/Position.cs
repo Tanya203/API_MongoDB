@@ -7,7 +7,7 @@ namespace API_MongoDB.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [BsonElement("positionName")]
         public string? PositionName { get; set; }
