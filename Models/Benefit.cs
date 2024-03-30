@@ -7,7 +7,7 @@ namespace API_MongoDB.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [BsonElement("benefitName")]
         public string? BenefitName { get; set; }
@@ -17,13 +17,13 @@ namespace API_MongoDB.Models
         public decimal Amount { get; set; }
 
         [BsonElement("staff")]
-        public List<StaffReference> Staff { get; set; }
+        public List<StaffReference>? Staff { get; set; }
 
         public class StaffReference
         {
             [BsonElement("$staffID")]
             [BsonRepresentation(BsonType.ObjectId)]
-            public string StaffId { get; set; }
+            public string? StaffId { get; set; }
         }
     }
 }
