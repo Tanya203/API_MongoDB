@@ -22,6 +22,13 @@ namespace API_MongoDB.Controllers
             return Ok(result);
         }
 
+        [HttpGet("/CountBenefit")]
+        public async Task<IActionResult> CountBenefit(string id)
+        {
+            var result = await _benefitServices.CountStaff(id);
+            return Ok(result);
+        }
+
         [HttpGet("/GetBenefitById")]
         public async Task<IActionResult> GetBenefitById(string id)
         {
@@ -40,6 +47,20 @@ namespace API_MongoDB.Controllers
         public async Task<IActionResult> CreateBenefit(Benefit benefit)
         {
             var result = await _benefitServices.CreateBenefit(benefit);
+            return Ok(result);
+        }
+
+        [HttpPut("/UpdateBenefit")]
+        public async Task<IActionResult> UpdateBenefit(Benefit benefit)
+        {
+            var result = await _benefitServices.UpdateBenefit(benefit);
+            return Ok(result);
+        }
+
+        [HttpDelete("/DeleteBenefit")]
+        public async Task<IActionResult> DeleteBenefit(string id)
+        {
+            var result = await _benefitServices.DeleteBenefit(id);
             return Ok(result);
         }
     }

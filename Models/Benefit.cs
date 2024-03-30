@@ -14,14 +14,14 @@ namespace API_MongoDB.Models
 
         [BsonElement("amount")]
         [BsonRepresentation(BsonType.Decimal128)]
-        public decimal Amount { get; set; }
+        public decimal? Amount { get; set; }
 
         [BsonElement("staff")]
-        public List<StaffReference>? Staff { get; set; }
+        public List<StaffModel>? Staff { get; set; }
 
-        public class StaffReference
+        public class StaffModel
         {
-            [BsonElement("$staffID")]
+            [BsonElement("staffID")]
             [BsonRepresentation(BsonType.ObjectId)]
             public string? StaffId { get; set; }
         }

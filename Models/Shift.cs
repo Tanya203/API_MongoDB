@@ -7,7 +7,7 @@ namespace API_MongoDB.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [BsonElement("shiftName")]
         public string? ShiftName { get; set; }
@@ -17,5 +17,9 @@ namespace API_MongoDB.Models
 
         [BsonElement("endTime")]
         public string? EndTime { get; set; }
+
+        [BsonElement("shiftTypeID")]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? ShiftTypeId { get; set; }
     }
 }
