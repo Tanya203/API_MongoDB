@@ -9,6 +9,10 @@
             services.AddScoped<DepartmentServices>();
             services.AddScoped<PositionServices>();
             services.AddScoped<ShiftServices>();
+            services.AddScoped<ShiftTypeServices>();
+            services.AddScoped<StaffServices>();
+            services.AddScoped<WorkScheduleServices>();
+            services.AddScoped<TimeKeepingMethodServices>();
             return services;
         }
     }

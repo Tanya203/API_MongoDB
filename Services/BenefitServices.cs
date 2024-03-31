@@ -1,6 +1,8 @@
 ﻿using API_MongoDB.Models;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace API_MongoDB.Services
 {
@@ -25,14 +27,18 @@ namespace API_MongoDB.Services
             return response;
         }
         
-        public async Task<object> CountStaff(string id)
+        public async Task<object> CountStaffByBenefitId(string id)
         {
-            var response = await _benefitCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
-            if (response == null)
-                return "Invalid Id";
-            long count = response.Staff.Count();
-            return count;
-           
+            try
+            {
+                var response = await _benefitCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+                long count = response.Staff.Count();
+                return count;                
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
         }
         public async Task<Benefit> GetBenefitByName(string name)
         {
@@ -56,18 +62,50 @@ namespace API_MongoDB.Services
         {
             try
             {
-                return await _benefitCollection.ReplaceOneAsync(s => s.Id == benefit.Id, benefit);
+                var update = Builders<Benefit>.Update
+                    .Set(s => s.Id, benefit.Id)
+                    .Set(s => s.BenefitName, benefit.BenefitName)
+                    .Set(s => s.Amount, benefit.Amount);
+                return await _benefitCollection.UpdateOneAsync(s => s.Id == benefit.Id, update);
             }
             catch (Exception ex)
             {
                 return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
             }
         }
+        public async Task<object> AddStaffInBenefit(Benefit benefit)
+        {
+            try
+            {
+                Benefit update = await _benefitCollection.FindSync(s => s.Id == benefit.Id).FirstOrDefaultAsync();               
+                if(update.Staff == null)
+                    update.Staff = new List<StaffModels>();
+                update.Staff.AddRange(benefit.Staff);
+                return await _benefitCollection.ReplaceOneAsync(s => s.Id == update.Id, update);
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }        
         public async Task<object> DeleteBenefit(string id)
         {
             try
             {
                 return await _benefitCollection.DeleteOneAsync(s => s.Id == id);
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
+        public async Task<object> DeleteStaffBenefit(string id, string staffId)
+        {
+            try
+            {
+                Benefit update = await _benefitCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+                update.Staff.RemoveAll(s => s.Id == staffId);
+                return await _benefitCollection.ReplaceOneAsync(s => s.Id == update.Id, update);
             }
             catch (Exception ex)
             {

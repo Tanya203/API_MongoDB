@@ -20,7 +20,7 @@
 
         public string? StaffCollectionName { get; set; }
 
-        public string? TimeKeepingMethod { get; set; }
+        public string? TimeKeepingMethodCollectionName { get; set; }
 
         public string? WorkScheduleCollectionName { get; set; }
     }

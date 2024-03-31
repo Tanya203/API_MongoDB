@@ -15,5 +15,9 @@ namespace API_MongoDB.Models
         [BsonElement("timeKeepingMehotdID")]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? TimeKeepingMethodId { get; set; }
+
+        [BsonElement("staff")]
+        public List<StaffModels>? Staff { get; set; }
+        
     }
 }

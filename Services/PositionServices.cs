@@ -29,6 +29,19 @@ namespace API_MongoDB.Services
             var response = await _positionCollection.Find(s => s.PositionName == name).FirstOrDefaultAsync();
             return response;
         }
+        public async Task<object> CountStaffByPositionId(string id)
+        {
+            try
+            {
+                var response = await _positionCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+                long count = response.Staff.Count();
+                return count;
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
         public async Task<string> CreatePosition(Position position)
         {
             try
@@ -45,7 +58,26 @@ namespace API_MongoDB.Services
         {
             try
             {
-                return await _positionCollection.ReplaceOneAsync(s => s.Id == position.Id, position);
+                var update = Builders<Position>.Update
+                    .Set(s => s.Id, position.Id)
+                    .Set(s => s.PositionName, position.PositionName)
+                    .Set(s => s.DepartmentID, position.DepartmentID);
+                return await _positionCollection.UpdateOneAsync(s => s.Id == position.Id, update);
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
+        public async Task<object> AddStaffInPosition(Position position)
+        {
+            try
+            {
+                Position update = await _positionCollection.FindSync(s => s.Id == position.Id).FirstOrDefaultAsync();
+                if (update.Staff == null)
+                    update.Staff = new List<StaffModels>();
+                update.Staff.AddRange(position.Staff);
+                return await _positionCollection.ReplaceOneAsync(s => s.Id == update.Id, update);
             }
             catch (Exception ex)
             {
@@ -57,6 +89,19 @@ namespace API_MongoDB.Services
             try
             {
                 return await _positionCollection.DeleteOneAsync(s => s.Id == id);
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
+        public async Task<object> DeleteStaffPosition(string id, string staffId)
+        {
+            try
+            {
+                Position update = await _positionCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+                update.Staff.RemoveAll(s => s.Id == staffId);
+                return await _positionCollection.ReplaceOneAsync(s => s.Id == update.Id, update);
             }
             catch (Exception ex)
             {

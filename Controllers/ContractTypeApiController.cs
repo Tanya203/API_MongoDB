@@ -35,6 +35,13 @@ namespace API_MongoDB.Controllers
             return Ok(result);
         }
 
+        [HttpGet("/CountStaffByContractTypeId")]
+        public async Task<IActionResult> CountStaffByContractTypeId(string id)
+        {
+            var result = await _contractTypeServices.CountStaffByContractTypeId(id);
+            return Ok(result);
+        }
+
         [HttpPost("/CreateContractType")]
         public async Task<IActionResult> CreateContractTypeByName(ContractType contractType)
         {
@@ -49,10 +56,24 @@ namespace API_MongoDB.Controllers
             return Ok(result);
         }
 
+        [HttpPut("/AddStaffInContractType")]
+        public async Task<IActionResult> AddStaffInContractType(ContractType contractType)
+        {
+            var result = await _contractTypeServices.AddStaffInContractType(contractType);
+            return Ok(result);
+        }
+
         [HttpDelete("/DeleteContractType")]
         public async Task<IActionResult> DeleteContractType(string id)
         {
             var result = await _contractTypeServices.DeleteContractType(id);
+            return Ok(result);
+        }
+
+        [HttpDelete("/DeleteStaffInContractType")]
+        public async Task<IActionResult> DeleteStaffInContractType(string id, string staffId)
+        {
+            var result = await _contractTypeServices.DeleteStaffInContractType(id, staffId);
             return Ok(result);
         }
     }

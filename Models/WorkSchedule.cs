@@ -7,39 +7,39 @@ namespace API_MongoDB.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public string? Id { get; set; }
 
         [BsonElement("workDate")]
-        [BsonRepresentation(BsonType.DateTime)]
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime? WorkDate { get; set; }
 
         [BsonElement("detail")]
-        public Detail[]? Array { get; set; }
+        public List<Detail>? Details { get; set; }
 
         public class Detail
         {
-            [BsonElement("$oid")]
+            [BsonId]
             [BsonRepresentation(BsonType.ObjectId)]
-            public required string StaffID { get; set; }
+            public string? StaffId { get; set; }
 
             [BsonElement("dateOff")]
-            public bool DateOff { get; set; }
+            public bool? DateOff { get; set; }
 
             [BsonElement("timeKeeping")]
-            public TimeKeeping TimeKeeping { get; set; }
+            public List<TimeKeeping>? TimeKeeping { get; set; }
         }
 
         public class TimeKeeping
         {
-            [BsonElement("$oid")]
+            [BsonId]
             [BsonRepresentation(BsonType.ObjectId)]
-            public required string ShiftID { get; set; }
+            public string? ShiftId { get; set; }
 
             [BsonElement("checkIn")]
-            public string? ShifTypeID { get; set; }
+            public string? CheckIn { get; set; }
 
             [BsonElement("checkOut")]
-            public string? CheckOut { get; set; }
+            public string? CheckOut { get; set; }           
         }
     }
 }
