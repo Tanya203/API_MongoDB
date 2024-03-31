@@ -29,6 +29,19 @@ namespace API_MongoDB.Services
             var response = await _contractTypCollection.Find(s => s.ContractTypeName == name).FirstOrDefaultAsync();
             return response;
         }
+        public async Task<object> CountStaffByContractTypeId(string id)
+        {
+            try
+            {
+                var response = await _contractTypCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+                long count = response.Staff.Count();
+                return count;
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
         public async Task<object> CreateContractType(ContractType contractType)
         {
             try
@@ -45,7 +58,26 @@ namespace API_MongoDB.Services
         {
             try
             {
-                return await _contractTypCollection.ReplaceOneAsync(s => s.Id == contractType.Id, contractType);
+                var update = Builders<ContractType>.Update
+                    .Set(s => s.Id, contractType.Id)
+                    .Set(s => s.ContractTypeName, contractType.ContractTypeName)
+                    .Set(s => s.TimeKeepingMethodId, contractType.TimeKeepingMethodId);
+                return await _contractTypCollection.UpdateOneAsync(s => s.Id == contractType.Id, update);
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
+        public async Task<object> AddStaffInContractType(ContractType contractType)
+        {
+            try
+            {
+                ContractType update = await _contractTypCollection.FindSync(s => s.Id == contractType.Id).FirstOrDefaultAsync();
+                if (update.Staff == null)
+                    update.Staff = new List<StaffModels>();
+                update.Staff.AddRange(contractType.Staff);
+                return await _contractTypCollection.ReplaceOneAsync(s => s.Id == update.Id, update);
             }
             catch (Exception ex)
             {
@@ -63,5 +95,20 @@ namespace API_MongoDB.Services
                 return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
             }
         }
+
+        public async Task<object> DeleteStaffInContractType(string id, string staffId)
+        {
+            try
+            {
+                ContractType update = await _contractTypCollection.FindSync(s => s.Id == id).FirstOrDefaultAsync();
+                update.Staff.RemoveAll(s => s.Id == staffId);
+                return await _contractTypCollection.ReplaceOneAsync(s => s.Id == update.Id, update);
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
+
     }
 }

@@ -35,6 +35,13 @@ namespace API_MongoDB.Controllers
             return Ok(result);
         }
 
+        [HttpGet("/CountStaffByDepartmentId")]
+        public async Task<IActionResult> CountStaffByDepartmentId(string id)
+        {
+            var result = await _departmentServices.CountStaffByDepartmentId(id);
+            return Ok(result);
+        }
+
         [HttpPost("/CreateDepartment")]
         public async Task<IActionResult> CreateDepartment(Department department)
         {
@@ -49,10 +56,24 @@ namespace API_MongoDB.Controllers
             return Ok(result);
         }
 
+        [HttpPut("/AddStaffInDepartment")]
+        public async Task<IActionResult> AddStaffInDepartment(Department department)
+        {
+            var result = await _departmentServices.AddStaffInDepartment(department);
+            return Ok(result);
+        }
+
         [HttpDelete("/DeleteDepartment")]
         public async Task<IActionResult> DeleteDepartment(string id)
         {
             var result = await _departmentServices.DeleteDepartment(id);
+            return Ok(result);
+        }
+
+        [HttpDelete("/DeleteStaffDepartment")]
+        public async Task<IActionResult> DeleteStaffDepartment(string id, string staffId)
+        {
+            var result = await _departmentServices.DeleteStaffDepartment(id, staffId);
             return Ok(result);
         }
     }

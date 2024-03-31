@@ -11,5 +11,8 @@ namespace API_MongoDB.Models
 
         [BsonElement("departmentName")]
         public string? DepartmentName { get; set; }
+
+        [BsonElement("staff")]
+        public List<StaffModels>? Staff { get; set; }
     }
 }

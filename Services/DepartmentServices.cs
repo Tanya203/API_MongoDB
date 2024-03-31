@@ -29,6 +29,19 @@ namespace API_MongoDB.Services
             var response = await _departmentCollection.Find(s => s.DepartmentName == name).FirstOrDefaultAsync();
             return response;
         }
+        public async Task<object> CountStaffByDepartmentId(string id)
+        {
+            try
+            {
+                var response = await _departmentCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+                long count = response.Staff.Count();
+                return count;
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
         public async Task<string> CreateDepartment(Department department)
         {
             try
@@ -45,7 +58,25 @@ namespace API_MongoDB.Services
         {
             try
             {
-                return await _departmentCollection.ReplaceOneAsync(s => s.Id == department.Id, department);
+                var update = Builders<Department>.Update
+                    .Set(s => s.Id, department.Id)
+                    .Set(s => s.DepartmentName, department.DepartmentName);
+                return await _departmentCollection.UpdateOneAsync(s => s.Id == department.Id, update);
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
+        public async Task<object> AddStaffInDepartment(Department department)
+        {
+            try
+            {
+                Department update = await _departmentCollection.FindSync(s => s.Id == department.Id).FirstOrDefaultAsync();
+                if (update.Staff == null)
+                    update.Staff = new List<StaffModels>();
+                update.Staff.AddRange(department.Staff);
+                return await _departmentCollection.ReplaceOneAsync(s => s.Id == update.Id, update);
             }
             catch (Exception ex)
             {
@@ -57,6 +88,19 @@ namespace API_MongoDB.Services
             try
             {
                 return await _departmentCollection.DeleteOneAsync(s => s.Id == id);
+            }
+            catch (Exception ex)
+            {
+                return ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            }
+        }
+        public async Task<object> DeleteStaffDepartment(string id, string staffId)
+        {
+            try
+            {
+                Department update = await _departmentCollection.Find(s => s.Id == id).FirstOrDefaultAsync();
+                update.Staff.RemoveAll(s => s.Id == staffId);
+                return await _departmentCollection.ReplaceOneAsync(s => s.Id == update.Id, update);
             }
             catch (Exception ex)
             {

@@ -17,13 +17,6 @@ namespace API_MongoDB.Models
         public decimal? Amount { get; set; }
 
         [BsonElement("staff")]
-        public List<StaffModel>? Staff { get; set; }
-
-        public class StaffModel
-        {
-            [BsonElement("staffID")]
-            [BsonRepresentation(BsonType.ObjectId)]
-            public string? StaffId { get; set; }
-        }
-    }
+        public List<StaffModels>? Staff { get; set; }
+    } 
 }
